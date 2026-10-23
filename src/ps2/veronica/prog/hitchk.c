@@ -4921,7 +4921,11 @@ void bhCheckExmAtari(BH_PWORK* pp)
                             pc_biorand_set_pickup_quantity(
                                 exp->prm0 < rom->itm_n ? rom->itmp[exp->prm0].wrk_no : 0);
 #endif
+#ifdef TARGET_PC
+                            sys->sb_id = pc_biorand_pickup_hack() ? op->type : op->id;
+#else
                             sys->sb_id = op->id;
+#endif
                             
                             if ((exp->attr & 0x1))
                             {
