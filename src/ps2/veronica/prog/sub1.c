@@ -3735,8 +3735,8 @@ void StatusMain()
 }
 
 // 100% matching!
-#ifdef RECVX_BIORAND
-extern unsigned char biorand_pickup_quantity;
+#ifdef TARGET_PC
+extern unsigned char override_pickup_quantity;
 #endif
 
 void GetItem(S_WORK* st)
@@ -3798,9 +3798,9 @@ void GetItem(S_WORK* st)
                     {
                         st->gb = (unsigned int*)&getbulletmax[sys->sb_id][sys->gm_mode];
                         
-#ifdef RECVX_BIORAND
-                        if (biorand_pickup_quantity)
-                            bullet1 += biorand_pickup_quantity;
+#ifdef TARGET_PC
+                        if (override_pickup_quantity)
+                            bullet1 += override_pickup_quantity;
                         else
 #endif
                             bullet1 += *st->gb;
@@ -4018,10 +4018,10 @@ void GetItem(S_WORK* st)
                         {
                             st->gb = (unsigned int*)&getbulletmax[sys->sb_id][sys->gm_mode];
                             
-#ifdef RECVX_BIORAND
-                            if (biorand_pickup_quantity)
+#ifdef TARGET_PC
+                            if (override_pickup_quantity)
                             {
-                                bullet1 += biorand_pickup_quantity;
+                                bullet1 += override_pickup_quantity;
                             }
                             else
 #endif
@@ -4053,8 +4053,8 @@ void GetItem(S_WORK* st)
                         }
                         
                         st->pip[amari + 1] = (itemid1 << 16) | bullet1;
-#ifdef RECVX_BIORAND
-                        biorand_pickup_quantity = 0;
+#ifdef TARGET_PC
+                        override_pickup_quantity = 0;
 #endif
 
                         if (!num1)
@@ -4105,11 +4105,11 @@ void GetItem(S_WORK* st)
                 } 
                 else 
                 {
-#ifdef RECVX_BIORAND
-                    if (biorand_pickup_quantity)
+#ifdef TARGET_PC
+                    if (override_pickup_quantity)
                     {
-                        st->pip[amari + 1] = (sys->sb_id << 16) | biorand_pickup_quantity;
-                        biorand_pickup_quantity = 0;
+                        st->pip[amari + 1] = (sys->sb_id << 16) | override_pickup_quantity;
+                        override_pickup_quantity = 0;
                     }
                     else
 #endif
@@ -4186,9 +4186,9 @@ void GetItem(S_WORK* st)
         
         st->gb = (unsigned int*)&getbulletmax[sys->sb_id][sys->gm_mode];
         
-#ifdef RECVX_BIORAND
-        st->pip[1] = (sys->sb_id << 16) | (biorand_pickup_quantity ? biorand_pickup_quantity : *st->gb);
-        biorand_pickup_quantity = 0;
+#ifdef TARGET_PC
+        st->pip[1] = (sys->sb_id << 16) | (override_pickup_quantity ? override_pickup_quantity : *st->gb);
+        override_pickup_quantity = 0;
 #else
         st->pip[1] = (sys->sb_id << 16) | *st->gb;
 #endif
