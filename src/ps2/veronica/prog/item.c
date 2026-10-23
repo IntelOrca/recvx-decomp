@@ -107,10 +107,12 @@ const short combidata[410] =
       131,     0
 };
 #ifdef TARGET_PC
-ITEM_WORK itemdata[156] =
+#define PC_RIFLE_STACK 0x200
 #else
-const ITEM_WORK itemdata[156] = 
+#define PC_RIFLE_STACK 0
 #endif
+
+const ITEM_WORK itemdata[156] = 
 {
     {   0,   -1,     0 },
     {   1,   -1,  3329 },
@@ -152,9 +154,9 @@ const ITEM_WORK itemdata[156] =
     {   6,  136,  3586 },
     { 400,  278,  5122 },
     {   1,   -1,     4 },
-    {   7,  282,  3074 },
+    {   7,  282,  3074 | PC_RIFLE_STACK },
     {   1,   -1,  1028 },
-    { 300,  289,  5122 },
+    { 300,  289,  5122 | PC_RIFLE_STACK },
     {   1,   -1,    64 },
     {   1,   -1,    64 },
     {   1,   -1,    64 },

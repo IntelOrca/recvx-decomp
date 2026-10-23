@@ -30,11 +30,7 @@ extern const unsigned short mestbl[14];
 extern const short c_a[14][6];
 extern const unsigned char curedata[10];
 extern const DSP_WORK dsptbl[160];
-#ifdef TARGET_PC
-extern ITEM_WORK itemdata[156];
-#else
 extern const ITEM_WORK itemdata[156];
-#endif
 extern const short combidata[410];
 
 #endif

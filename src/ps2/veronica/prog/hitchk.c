@@ -4638,6 +4638,10 @@ int bhCheckInnerP4(NJS_POINT2* pos, NJS_POINT2* p0, NJS_POINT2* p1, NJS_POINT2* 
 }
 
 // 100% matching!
+#ifdef RECVX_BIORAND
+unsigned char biorand_pickup_quantity;
+#endif
+
 void bhCheckExmAtari(BH_PWORK* pp)
 {
     NJS_POINT3 ps; 
@@ -4917,12 +4921,10 @@ void bhCheckExmAtari(BH_PWORK* pp)
                         
                         if ((op->flg & 0x1)) 
                         {
-#ifdef TARGET_PC
-                            pc_biorand_set_pickup_quantity(
-                                exp->prm0 < rom->itm_n ? rom->itmp[exp->prm0].wrk_no : 0);
-#endif
-#ifdef TARGET_PC
-                            sys->sb_id = pc_biorand_pickup_hack() ? op->type : op->id;
+#ifdef RECVX_BIORAND
+                            biorand_pickup_quantity =
+                                exp->prm0 < rom->itm_n ? rom->itmp[exp->prm0].wrk_no : 0;
+                            sys->sb_id = op->type;
 #else
                             sys->sb_id = op->id;
 #endif
