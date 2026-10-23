@@ -2538,6 +2538,11 @@ static void PoisonAttack(O_WRK* op)
     NJS_SPHERE col;
     NJS_VECTOR attack_v;
 
+#ifdef TARGET_PC
+    if (pc_biorand_no_nosferatu_poison())
+        return;
+#endif
+
     if (poison_attack_wait != 0)
     {
         return;

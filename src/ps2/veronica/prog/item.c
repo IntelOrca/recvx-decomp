@@ -106,7 +106,11 @@ const short combidata[410] =
       142,     1,     1,    12,
       131,     0
 };
+#ifdef TARGET_PC
+ITEM_WORK itemdata[156] =
+#else
 const ITEM_WORK itemdata[156] = 
+#endif
 {
     {   0,   -1,     0 },
     {   1,   -1,  3329 },

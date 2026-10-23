@@ -4917,6 +4917,10 @@ void bhCheckExmAtari(BH_PWORK* pp)
                         
                         if ((op->flg & 0x1)) 
                         {
+#ifdef TARGET_PC
+                            pc_biorand_set_pickup_quantity(
+                                exp->prm0 < rom->itm_n ? rom->itmp[exp->prm0].wrk_no : 0);
+#endif
                             sys->sb_id = op->id;
                             
                             if ((exp->attr & 0x1))

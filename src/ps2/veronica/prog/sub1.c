@@ -3794,7 +3794,12 @@ void GetItem(S_WORK* st)
                     {
                         st->gb = (unsigned int*)&getbulletmax[sys->sb_id][sys->gm_mode];
                         
-                        bullet1 += *st->gb;
+#ifdef TARGET_PC
+                        if (pc_biorand_pickup_quantity)
+                            bullet1 += pc_biorand_pickup_quantity;
+                        else
+#endif
+                            bullet1 += *st->gb;
                     }
                     
                     if (bullet1 > 999) 
@@ -4009,6 +4014,13 @@ void GetItem(S_WORK* st)
                         {
                             st->gb = (unsigned int*)&getbulletmax[sys->sb_id][sys->gm_mode];
                             
+#ifdef TARGET_PC
+                            if (pc_biorand_pickup_quantity)
+                            {
+                                bullet1 += pc_biorand_pickup_quantity;
+                            }
+                            else
+#endif
                             if (sys->sb_id == 31) 
                             {
                                 if (roomno == 1) 
@@ -4037,6 +4049,9 @@ void GetItem(S_WORK* st)
                         }
                         
                         st->pip[amari + 1] = (itemid1 << 16) | bullet1;
+#ifdef TARGET_PC
+                        pc_biorand_pickup_quantity = 0;
+#endif
 
                         if (!num1)
                         {
@@ -4086,6 +4101,14 @@ void GetItem(S_WORK* st)
                 } 
                 else 
                 {
+#ifdef TARGET_PC
+                    if (pc_biorand_pickup_quantity)
+                    {
+                        st->pip[amari + 1] = (sys->sb_id << 16) | pc_biorand_pickup_quantity;
+                        pc_biorand_pickup_quantity = 0;
+                    }
+                    else
+#endif
                     if ((sys->sb_id == 4) && ((roomno == 926) || (roomno == 706))) 
                     {
                         st->pip[amari + 1] = (sys->sb_id << 16) | (unsigned char)sys->itm[224]; 
@@ -4159,7 +4182,12 @@ void GetItem(S_WORK* st)
         
         st->gb = (unsigned int*)&getbulletmax[sys->sb_id][sys->gm_mode];
         
+#ifdef TARGET_PC
+        st->pip[1] = (sys->sb_id << 16) | (pc_biorand_pickup_quantity ? pc_biorand_pickup_quantity : *st->gb);
+        pc_biorand_pickup_quantity = 0;
+#else
         st->pip[1] = (sys->sb_id << 16) | *st->gb;
+#endif
         
         if (*st->pip == 1)
         {
@@ -8605,6 +8633,10 @@ void AllItemInit()
     }
     
     sys->itm[383] = 1;
+
+#ifdef TARGET_PC
+    pc_biorand_apply_start_inventory();
+#endif
 }
 
 // 100% matching!
