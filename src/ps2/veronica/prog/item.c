@@ -110,13 +110,6 @@ const short combidata[410] =
    ribbons and the other ammo already use it). Retail leaves it off the rifle
    and assault-rifle bullet entries, which makes every pickup take a slot; the
    PC port sets it so those pickups merge into one stack. */
-#define ITEM_TYPE_STACKABLE 0x200
-#ifdef TARGET_PC
-#define RIFLE_BULLETS_STACK ITEM_TYPE_STACKABLE
-#else
-#define RIFLE_BULLETS_STACK 0
-#endif
-
 const ITEM_WORK itemdata[156] = 
 {
     {   0,   -1,     0 },
@@ -159,9 +152,17 @@ const ITEM_WORK itemdata[156] =
     {   6,  136,  3586 },
     { 400,  278,  5122 },
     {   1,   -1,     4 },
-    {   7,  282,  3074 | RIFLE_BULLETS_STACK },
+#ifdef TARGET_PC
+    {   7,  282,  3074 | 0x200 },
+#else
+    {   7,  282,  3074 },
+#endif
     {   1,   -1,  1028 },
-    { 300,  289,  5122 | RIFLE_BULLETS_STACK },
+#ifdef TARGET_PC
+    { 300,  289,  5122 | 0x200 },
+#else
+    { 300,  289,  5122 },
+#endif
     {   1,   -1,    64 },
     {   1,   -1,    64 },
     {   1,   -1,    64 },
