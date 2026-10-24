@@ -106,10 +106,15 @@ const short combidata[410] =
       142,     1,     1,    12,
       131,     0
 };
+/* 0x200 is the standard stackable item-type flag (handgun bullets, ink
+   ribbons and the other ammo already use it). Retail leaves it off the rifle
+   and assault-rifle bullet entries, which makes every pickup take a slot; the
+   PC port sets it so those pickups merge into one stack. */
+#define ITEM_TYPE_STACKABLE 0x200
 #ifdef TARGET_PC
-#define PC_RIFLE_STACK 0x200
+#define RIFLE_BULLETS_STACK ITEM_TYPE_STACKABLE
 #else
-#define PC_RIFLE_STACK 0
+#define RIFLE_BULLETS_STACK 0
 #endif
 
 const ITEM_WORK itemdata[156] = 
@@ -154,9 +159,9 @@ const ITEM_WORK itemdata[156] =
     {   6,  136,  3586 },
     { 400,  278,  5122 },
     {   1,   -1,     4 },
-    {   7,  282,  3074 | PC_RIFLE_STACK },
+    {   7,  282,  3074 | RIFLE_BULLETS_STACK },
     {   1,   -1,  1028 },
-    { 300,  289,  5122 | PC_RIFLE_STACK },
+    { 300,  289,  5122 | RIFLE_BULLETS_STACK },
     {   1,   -1,    64 },
     {   1,   -1,    64 },
     {   1,   -1,    64 },

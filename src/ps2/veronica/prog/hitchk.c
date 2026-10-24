@@ -4639,6 +4639,7 @@ int bhCheckInnerP4(NJS_POINT2* pos, NJS_POINT2* p0, NJS_POINT2* p1, NJS_POINT2* 
 
 // 100% matching!
 #ifdef TARGET_PC
+/* Pickup count for the floor pickup being handled. 0 = retail. */
 unsigned char override_pickup_quantity;
 #endif
 
@@ -4922,9 +4923,12 @@ void bhCheckExmAtari(BH_PWORK* pp)
                         if ((op->flg & 0x1)) 
                         {
 #ifdef TARGET_PC
-                            override_pickup_quantity =
-                                exp->prm0 < rom->itm_n ? rom->itmp[exp->prm0].wrk_no : 0;
-                            sys->sb_id = op->type ? op->type : op->id;
+                            /* Retail leaves the type field at zero; generated
+                               room data may store the retail id or a
+                               replacement pickup id there. A non-zero type
+                               below the item table size is the pickup id. */
+                            unsigned short pickup_type = op->type;
+                            sys->sb_id = (pickup_type && pickup_type < 156) ? pickup_type : op->id;
 #else
                             sys->sb_id = op->id;
 #endif
@@ -4943,6 +4947,15 @@ void bhCheckExmAtari(BH_PWORK* pp)
                             } 
                             else
                             {
+#ifdef TARGET_PC
+                                /* wrk_no is the optional count for this floor
+                                   pickup; 0 keeps the retail behaviour. It is
+                                   only set here, not for directly used AOTs. */
+                                override_pickup_quantity =
+                                    (pickup_type && pickup_type < 156)
+                                        ? (exp->prm0 < rom->itm_n ? rom->itmp[exp->prm0].wrk_no : 0)
+                                        : 0;
+#endif
                                 sys->st_flg &= ~0x4;
                                 
                                 sys->cb_flg |= 0x10;

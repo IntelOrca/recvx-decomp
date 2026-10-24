@@ -3736,11 +3736,18 @@ void StatusMain()
 
 // 100% matching!
 #ifdef TARGET_PC
+/* Set by bhCheckExmAtari just before a floor pickup; GetItem consumes it. */
 extern unsigned char override_pickup_quantity;
 #endif
 
 void GetItem(S_WORK* st)
 {
+#ifdef TARGET_PC
+    /* Consume the quantity at entry: it belongs to this call only, and a
+       cancelled or full-inventory pickup must not leak it into a later grant. */
+    unsigned char override_quantity = override_pickup_quantity;
+    override_pickup_quantity = 0;
+#endif
     unsigned short num1, num2;     
     unsigned short bullet1; 
     unsigned int bullettype;
@@ -3799,8 +3806,10 @@ void GetItem(S_WORK* st)
                         st->gb = (unsigned int*)&getbulletmax[sys->sb_id][sys->gm_mode];
                         
 #ifdef TARGET_PC
-                        if (override_pickup_quantity)
-                            bullet1 += override_pickup_quantity;
+                        /* A non-zero room override replaces the amount that
+                           getbulletmax would add for this pickup. */
+                        if (override_quantity)
+                            bullet1 += override_quantity;
                         else
 #endif
                             bullet1 += *st->gb;
@@ -4019,9 +4028,11 @@ void GetItem(S_WORK* st)
                             st->gb = (unsigned int*)&getbulletmax[sys->sb_id][sys->gm_mode];
                             
 #ifdef TARGET_PC
-                            if (override_pickup_quantity)
+                            /* A non-zero room override replaces the amount
+                               that getbulletmax would add. */
+                            if (override_quantity)
                             {
-                                bullet1 += override_pickup_quantity;
+                                bullet1 += override_quantity;
                             }
                             else
 #endif
@@ -4054,7 +4065,8 @@ void GetItem(S_WORK* st)
                         
                         st->pip[amari + 1] = (itemid1 << 16) | bullet1;
 #ifdef TARGET_PC
-                        override_pickup_quantity = 0;
+                        /* The override applies to this pickup only. */
+                        override_quantity = 0;
 #endif
 
                         if (!num1)
@@ -4106,10 +4118,12 @@ void GetItem(S_WORK* st)
                 else 
                 {
 #ifdef TARGET_PC
-                    if (override_pickup_quantity)
+                    /* A non-zero room override is the count for this item;
+                       otherwise the room's retail special cases apply. */
+                    if (override_quantity)
                     {
-                        st->pip[amari + 1] = (sys->sb_id << 16) | override_pickup_quantity;
-                        override_pickup_quantity = 0;
+                        st->pip[amari + 1] = (sys->sb_id << 16) | override_quantity;
+                        override_quantity = 0;
                     }
                     else
 #endif
@@ -4186,12 +4200,8 @@ void GetItem(S_WORK* st)
         
         st->gb = (unsigned int*)&getbulletmax[sys->sb_id][sys->gm_mode];
         
-#ifdef TARGET_PC
-        st->pip[1] = (sys->sb_id << 16) | (override_pickup_quantity ? override_pickup_quantity : *st->gb);
-        override_pickup_quantity = 0;
-#else
+        /* Event grants are not floor pickups: use the retail table. */
         st->pip[1] = (sys->sb_id << 16) | *st->gb;
-#endif
         
         if (*st->pip == 1)
         {
