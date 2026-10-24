@@ -8782,6 +8782,17 @@ unsigned int bhPlItemChangeM()
     
     v1 = *bhScePtr;
     
+#ifdef TARGET_PC
+    /* 0xFF is the PC sentinel for the special inventory slot. The third
+       operand is the item count, so no separate PlItemTamaSet is needed. */
+    if (v0 == 0xFF)
+    {
+        int count = bhScePtr[1];
+        sys->itm[(sys->ply_id * 16) + 1] = ((unsigned int)v1 << 16) | (count & 0xFF);
+        bhScePtr += 2;
+        return 1;
+    }
+#endif
     bhScePtr += 2;
 
     for (cnt = (sys->ply_id * 16) + 2; cnt < ((sys->ply_id * 16) + 12); cnt++) 
